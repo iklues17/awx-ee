@@ -1,4 +1,4 @@
-python38-devel [platform:rpm compile]
+python38-devel [compile platform:centos-8 platform:rhel-8]
 subversion [platform:rpm]
 subversion [platform:dpkg]
 git-lfs [platform:rpm]

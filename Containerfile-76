@@ -23,10 +23,14 @@ FROM $EE_BASE_IMAGE
 USER root
 
 RUN yum install -y sudo
+#RUN yum install -y java-1.8.0-openjdk-devel
+COPY _build/java/* /usr/share/java/
 COPY --from=galaxy /usr/share/ansible /usr/share/ansible
 
 COPY --from=builder /output/ /output/
 RUN /output/install-from-bindep && rm -rf /output/wheels
+RUN ls -al /usr/bin/ |grep python
+RUN alternatives --set python /usr/bin/python3
 COPY --from=quay.io/project-receptor/receptor:1.0.0a2 /usr/bin/receptor /usr/bin/receptor
 RUN mkdir -p /var/run/receptor
 ADD run.sh /run.sh
@@ -34,36 +38,23 @@ CMD /run.sh
 #USER 1000
 RUN git lfs install
 
-## ndap-playbooks/roles/common/tasks/package.yml
-RUN yum install -y java-1.8.0-openjdk-devel
-ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
-# java-1.8.0-openjdk-devel
-# gcc
-# python-devel
-# python-pip
 RUN yum install -y zip
 RUN yum install -y unzip
 RUN yum install -y openssh
 RUN yum install -y openssl
-RUN yum install -y openssl-devel
-RUN yum install -y swig
-RUN yum install -y snappy
-RUN yum install -y snappy-devel
-RUN yum install -y libselinux-python
-RUN yum install -y mysql-connector-python
-RUN yum install -y libselinux-python
-# RUN yum install -y bigtop-utils
-RUN yum install -y m2crypto
-RUN yum install -y python-httplib2
-COPY _build/java/* /usr/share/java/
-# RUN yum install -y mariadb-java-client
-RUN curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-RUN yum install -y MariaDB-client
-RUN yum install -y MySQL-python
+RUN yum install -y mariadb-java-client
+#RUN yum install -y mariadb
+#RUN yum install -y mysql
 
-#RUN pip install --upgrade pip
-#RUN python2 -m pip install httplib2
-#RUN python2 -m pip install python-mysql
+RUN ls -al /usr/bin/ |grep python
+
+RUN yum install -y java-1.8.0-openjdk-devel mysql
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
 
 #ADD _build/python2-httplib2-0.18.1-3.el7.noarch.rpm python2-httplib2-0.18.1-3.el7.noarch.rpm
 #RUN yum localinstall -y python2-httplib2-0.18.1-3.el7.noarch.rpm
+RUN yum install -y python2
+RUN alternatives --set python /usr/bin/python2
+RUN yum install -y python2-pip
+RUN python -m pip install httplib2
+RUN python -m pip install PyMySQL
