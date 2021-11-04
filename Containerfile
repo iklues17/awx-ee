@@ -60,10 +60,9 @@ COPY _build/java/* /usr/share/java/
 RUN curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 RUN yum install -y MariaDB-client
 RUN yum install -y MySQL-python
+RUN yum install -y python-netaddr
+RUN python3 -m pip install PyMySQL
 
-#RUN pip install --upgrade pip
-#RUN python2 -m pip install httplib2
-#RUN python2 -m pip install python-mysql
-
-#ADD _build/python2-httplib2-0.18.1-3.el7.noarch.rpm python2-httplib2-0.18.1-3.el7.noarch.rpm
-#RUN yum localinstall -y python2-httplib2-0.18.1-3.el7.noarch.rpm
+RUN mkdir -p /root/.ssh/
+COPY _build/ssh/* /root/.ssh/
+RUN sed -i'' -r -e "/#   StrictHostKeyChecking ask/a\StrictHostKeyChecking no" /etc/ssh/ssh_config
