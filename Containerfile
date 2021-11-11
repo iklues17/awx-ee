@@ -34,35 +34,23 @@ CMD /run.sh
 #USER 1000
 RUN git lfs install
 
-## ndap-playbooks/roles/common/tasks/package.yml
-RUN yum install -y java-1.8.0-openjdk-devel
-ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
-# java-1.8.0-openjdk-devel
-# gcc
-# python-devel
-# python-pip
-RUN yum install -y zip
-RUN yum install -y unzip
-RUN yum install -y openssh
-RUN yum install -y openssl
-RUN yum install -y openssl-devel
-RUN yum install -y swig
-RUN yum install -y snappy
-RUN yum install -y snappy-devel
-RUN yum install -y libselinux-python
-RUN yum install -y mysql-connector-python
-RUN yum install -y libselinux-python
-# RUN yum install -y bigtop-utils
-RUN yum install -y m2crypto
-RUN yum install -y python-httplib2
-COPY _build/java/* /usr/share/java/
-# RUN yum install -y mariadb-java-client
-RUN curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-RUN yum install -y MariaDB-client
-RUN yum install -y MySQL-python
-RUN yum install -y python-netaddr
-RUN python3 -m pip install PyMySQL
-
+## skip ssh warn at ktcloud
 RUN mkdir -p /root/.ssh/
 COPY _build/ssh/* /root/.ssh/
 RUN sed -i'' -r -e "/#   StrictHostKeyChecking ask/a\StrictHostKeyChecking no" /etc/ssh/ssh_config
+
+## ndap-playbooks/roles/common/tasks/package.yml
+RUN yum install -y java-1.8.0-openjdk-devel
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
+COPY _build/java/* /usr/share/java/
+
+RUN yum install -y zip, unzip, openssh, openssl, openssl-devel
+RUN yum install -y swig, snappy, snappy-devel, m2crypto
+RUN yum install -y mysql-connector-python, python-httplib2, MySQL-python, python-netaddr
+RUN python3 -m pip install PyMySQL
+
+RUN curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+RUN yum clean all
+RUN yum install -y MariaDB-client
+
+RUN yum install -y libselinux-python
